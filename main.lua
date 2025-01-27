@@ -15,7 +15,7 @@ function makeNewDungeon(rooms)
     return Dungeon:new(rooms)
 end
 
-local dungeonCardinality = 12
+local dungeonCardinality = 6
 local dungeonInstance = makeNewDungeon(dungeonCardinality)
 
 -- Load some default values for our rectangle.

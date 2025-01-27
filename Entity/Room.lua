@@ -65,17 +65,18 @@ function Room:drawHorizontalWall(y, withGap, scale)
             (self.body.center.x - 0.5) * scale, y * scale,
             (self.body.center.x + 0.5) * scale, y * scale
         )
-    else
-        love.graphics.line(
-            (self.body.center.x - 0.5) * scale, y * scale,
-            (self.body.center.x - 0.25) * scale, y * scale
-        )
-
-        love.graphics.line(
-            (self.body.center.x + 0.25) * scale, y * scale,
-            (self.body.center.x + 0.5) * scale, y * scale
-        )
+        return
     end
+
+    love.graphics.line(
+        (self.body.center.x - 0.5) * scale, y * scale,
+        (self.body.center.x - 0.25) * scale, y * scale
+    )
+
+    love.graphics.line(
+        (self.body.center.x + 0.25) * scale, y * scale,
+        (self.body.center.x + 0.5) * scale, y * scale
+    )
 end
 
 function Room:drawVerticalWall(x, withGap, scale)
@@ -84,17 +85,17 @@ function Room:drawVerticalWall(x, withGap, scale)
             x * scale, (self.body.center.y - 0.5) * scale,
             x * scale, (self.body.center.y + 0.5) * scale
         )
-    else
-        love.graphics.line(
-            x * scale, (self.body.center.y - 0.5) * scale,
-            x * scale, (self.body.center.y - 0.25) * scale
-        )
-
-        love.graphics.line(
-            x * scale, (self.body.center.y + 0.25) * scale,
-            x * scale, (self.body.center.y + 0.5) * scale
-        )
+        return
     end
+    love.graphics.line(
+        x * scale, (self.body.center.y - 0.5) * scale,
+        x * scale, (self.body.center.y - 0.25) * scale
+    )
+
+    love.graphics.line(
+        x * scale, (self.body.center.y + 0.25) * scale,
+        x * scale, (self.body.center.y + 0.5) * scale
+    )
 end
 
 function Room:update()

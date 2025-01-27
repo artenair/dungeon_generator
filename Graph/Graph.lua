@@ -1,3 +1,5 @@
+local Collection = require"Helpers.Collection"
+
 ---@class Graph
 ---@field root Node
 ---@field nodes Node[]
@@ -38,6 +40,36 @@ function Graph:hasEdge(a, b)
         if node == b then return true end
     end
     return false
+end
+
+function Graph:getSpanningTree()
+    local tree = Graph:new()
+    if #self.nodes < 1 then return tree end
+    tree:addNode(self.nodes[1])
+    local isSameNode = function(a, b) return a.id == b.id end
+    local nodes = Collection:new(self.nodes)
+    while #tree.nodes < #self.nodes do
+        local explored = Collection:new(tree.nodes)
+        local candidates = explored:reduce(function (candidates, node)
+            Collection
+                :new(self.edges[node.id])
+                :filter(function(candidate) return candidate.id ~= node.id end)
+                :foreach(function(candidate)
+                    if not candidates:contains(candidate, isSameNode) then
+                        candidates:add(candidate)
+                    end
+                end)
+            return candidates
+        end, Collection:new())
+        local selected = candidates:get(math.random(candidates:size()))
+        tree:addNode(selected)
+
+        local selectedEdges = Collection:new(self.edges[selected.id]):filter(function(node)
+            return Collection:new(tree.nodes):contains(node, isSameNode)
+        end)
+        tree:addEdge(selected, selectedEdges:get(math.random(selectedEdges:size())))
+    end
+    return tree
 end
 
 return Graph
