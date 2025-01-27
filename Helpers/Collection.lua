@@ -103,7 +103,7 @@ end
 
 function Collection:get(index)
     if index < 1 or index > #self.elements then
-        error("Invalid index")
+        return nil
     end
     return self.elements[index]
 end

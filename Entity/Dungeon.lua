@@ -2,6 +2,8 @@ local Room = require"Entity.Room"
 local Point = require"Geometry.Point"
 local Direction = require"Helpers.Direction"
 local Collection = require"Helpers.Collection"
+local Graph = require"Graph.Graph"
+local Node = require"Graph.Node"
 
 ---@class Dungeon
 ---@field cardinality integer
@@ -29,17 +31,7 @@ end
 ---Generates the virtual grid and spawns the dungeon rooms anchor points
 function Dungeon:generate()
     math.randomseed(os.time())
-    self.rooms = Collection:new()
-    local grid = {}
-
-    for y=1,self.height do
-        grid[y] = {}
-        for x=1,self.width do
-            grid[y][x] = nil
-        end
-    end
-
-    for _=1,self.cardinality do self:expand(grid) end
+    self.rooms = self:generateRooms()
 
     local getX = function (room) return room.body.center.x end
     local getY = function (room) return room.body.center.y end
@@ -67,62 +59,101 @@ function Dungeon:generate()
 end
 
 ---Adds a room to the dungeon
----@param grid Room[][]
-function Dungeon:expand(grid)
-    local neighboursLocations = {
+function Dungeon:generateRooms()
+    local dungeonGraph = self:generateRoomsPositions()
+    local roomPositions = Collection:new(dungeonGraph.nodes)
+    local directions = self:getDungeonDirections()
+
+    local rooms = roomPositions:map(function(node)
+        local position = node.item
+        return Room:new(position)
+    end)
+
+    rooms:foreach(function (room)
+        rooms:foreach(function(other)
+            local delta = Point:new(
+                other.body.center.x - room.body.center.x,
+                other.body.center.y - room.body.center.y
+            )
+
+            for direction, d in pairs(directions) do
+                if delta.x == d.x and delta.y == d.y then
+                    room:addNeighbour(other, direction)
+                end
+            end
+        end)
+    end)
+
+    return rooms
+end
+
+function Dungeon:getDungeonDirections()
+    return {
         [Direction.WEST] = Point:new(-1, 0),
         [Direction.EAST] = Point:new(1, 0),
         [Direction.SOUTH] = Point:new(0, 1),
         [Direction.NORTH] = Point:new(0, -1),
     }
+end
 
-    local candidates = Collection:new()
+function Dungeon:generateRoomsPositions()
+    local dungeon = Graph:new()
+    local delta = self:getDungeonDirections()
 
-    for y=1,self.height do
-        for x=1,self.width do
-            local foundNeighbour = false
-            local location = Point:new(x, y)
-            local neighbour = nil
-            if grid[location.y][location.x] == nil then
-                for _, neighbourLocation in pairs(neighboursLocations) do
-                    neighbour = Point:new(x + neighbourLocation.x, y + neighbourLocation. y)
-                    if neighbour.x > 0 and neighbour.x <= self.width and neighbour.y > 0 and neighbour.y <= self.height then
-                        foundNeighbour = foundNeighbour or grid[neighbour.y][neighbour.x] ~= nil
-                    end
-                end
-                local alreadyFound = candidates:contains(location, function (a, b)
-                    return a.x == b.x and a.y == b.y
-                end)
+    local inGrid = function (position)
+        return  position.x > 0 and
+                position.x <= self.width and
+                position.y > 0 and
+                position.y <= self.height
+    end
 
-                if foundNeighbour and not alreadyFound then
-                    candidates:add(location)
-                end
+    ---Gets all the possible neighbours from a certain position
+    ---@param position Point
+    ---@return Collection
+    local getNeighbours = function(position)
+        local neighbours = {}
+        for _, d in pairs(delta) do
+            local neighbour = Point:new(position.x + d.x, position.y + d.y)
+            if inGrid(neighbour) then
+                neighbours[#neighbours+1] = neighbour
             end
         end
+        return Collection:new(neighbours)
     end
 
-    local selected = nil
-    if candidates:size() > 0 then
-        selected = candidates:get(math.random(candidates:size()))
-    else
-        selected = Point:new(math.floor(self.width / 2), math.floor(self.height / 2))
-    end
+    for i=1,self.cardinality do
+        local nodes = Collection:new(dungeon.nodes)
+        local candidates = Collection:new()
+        nodes:foreach(function(node)
+            local neighbours = getNeighbours(node.item)
+            neighbours:foreach(function(neighbour)
+                local positions = nodes:map(function(a) return a.item end)
+                local present = positions:contains(neighbour, function(a, b) return a:equals(b) end)
+                if present then return end
+                candidates:add(neighbour)
+            end)
+        end)
 
-    local room = Room:new(selected)
-    grid[selected.y][selected.x] = room
-    self.rooms:add(room)
-
-    local neighbour = nil
-    for direction, delta in pairs(neighboursLocations) do
-        local neighbourLocation = Point:new(selected.x + delta.x, selected.y + delta.y)
-        if neighbourLocation.x > 0 and neighbourLocation.x <= self.width and neighbourLocation.y > 0 and neighbourLocation.y <= self.height then
-            neighbour = grid[neighbourLocation.y][neighbourLocation.x]
+        local selected = candidates:get(math.random(candidates:size()))
+        if not selected then
+            selected = Point:new(math.floor(self.width / 2), math.floor(self.height / 2))
         end
-        if neighbour ~= nil then
-            room:addNeighbour(neighbour, direction)
-        end
+
+        local newNode = Node:new(selected)
+        dungeon:addNode(newNode)
+
+        getNeighbours(selected):foreach(function(neighbour)
+            local neighbourNode = nodes:reduce(function(found, node)
+                if found then return found end
+                if neighbour:equals(node.item) then return node end
+                return nil
+            end, nil)
+            if not neighbourNode then return end
+            dungeon:addEdge(newNode, neighbourNode)
+        end)
     end
 
+    return dungeon
 end
 
 function Dungeon:draw()

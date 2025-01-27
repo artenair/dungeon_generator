@@ -20,4 +20,8 @@ function Point:distance(other)
     return math.sqrt(dx*dx + dy*dy)
 end
 
+function Point:equals(other)
+    return self.x == other.x and self.y == other.y
+end
+
 return Point
