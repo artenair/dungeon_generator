@@ -4,6 +4,8 @@ local Collection = require"Helpers.Collection"
 
 ---@class Dungeon
 ---@field graph Graph 
+---@field bounds Point
+---@field spawn Room
 local Dungeon = {}
 Dungeon.__index = Dungeon
 
@@ -48,6 +50,8 @@ function Dungeon:detectSpawn()
         end
         return { room = room, distance = currentMaxDistance }
     end, { room = nil, distance = math.huge}).room
+
+    self.spawn.isSpawn = true
 end
 
 return Dungeon

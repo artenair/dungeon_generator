@@ -5,6 +5,7 @@ local Direction = require"Helpers.Direction"
 ---@class Room
 ---@field body Polygon
 ---@field neighbours Room[]
+---@field isSpawn boolean
 local Room = {}
 Room.__index = Room
 
@@ -20,7 +21,8 @@ function Room:new(center, width, height)
             width or 1,
             height or 1
         ),
-        neighbours = {}
+        neighbours = {},
+        isSpawn = false
     }, self)
 end
 

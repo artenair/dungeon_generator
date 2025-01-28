@@ -14,6 +14,17 @@ function RoomRenderer:handle(room, scale, gap)
     gap = gap or 0
 
     love.graphics.setColor(1, 1, 1, 1)
+    self:drawWalls(room, scale, gap)
+    self:drawDecoration(room, scale)
+end
+
+function RoomRenderer:drawDecoration(room, scale)
+    if not room.isSpawn then return end
+    love.graphics.setNewFont(math.floor(scale / 2))
+    love.graphics.print("s", scale * (room.body.center.x - 0.1), scale * (room.body.center.y - 0.375))
+end
+
+function RoomRenderer:drawWalls(room, scale, gap)
     self:drawWall(room, Direction.NORTH, scale, gap)
     self:drawWall(room, Direction.SOUTH, scale, gap)
     self:drawWall(room, Direction.WEST, scale, gap)

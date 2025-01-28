@@ -12,15 +12,16 @@ function getCenter()
     return settings.window.width / 2, settings.window.height / 2
 end
 
+local dungeonFactory = DungeonFactory:new(settings.generator.rooms)
 
-local dungeonCardinality = 4
-local dungeonFactory = DungeonFactory:new(dungeonCardinality)
 local makeNewDungeon = function(rooms)
+    rooms = rooms or settings.generator.rooms or 6
     dungeonFactory:setSeed(os.time())
     dungeonFactory:setRooms(rooms)
     return dungeonFactory:makeSkeleton()
 end
-local dungeonInstance = makeNewDungeon(dungeonCardinality)
+
+local dungeonInstance = makeNewDungeon()
 local dungeonRenderer = DungeonRenderer:new()
 
 -- Load some default values for our rectangle.
@@ -44,7 +45,7 @@ function love.keypressed(key)
     end
 
     if key == "r" then
-        dungeonInstance = makeNewDungeon(dungeonCardinality)
+        dungeonInstance = makeNewDungeon()
     end
 end
 

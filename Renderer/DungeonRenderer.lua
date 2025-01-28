@@ -12,7 +12,7 @@ end
 
 ---Renders a dungeon to video
 ---@param dungeon Dungeon 
----@param gap number 
+---@param gap ?number
 function DungeonRenderer:handle(dungeon, gap)
     local rooms = Collection:new(dungeon.graph.nodes):map(function(node) return node.item end)
     local widthSegments = love.graphics.getWidth() / (dungeon.bounds.x + 1)

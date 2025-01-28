@@ -1,4 +1,7 @@
 return {
-    window = { width = 1280, height = 800 }
+    window = { width = 1280, height = 800 },
+    generator = {
+        rooms = 12
+    }
 };
 
