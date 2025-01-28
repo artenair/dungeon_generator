@@ -1,8 +1,7 @@
 require("Helpers.functions")
 
 ---@class Collection
----@field collection any[] 
-
+---@field elements any[] 
 local Collection = {}
 Collection.__index = Collection
 
@@ -22,6 +21,7 @@ function Collection:add(item)
     else
         self.elements[#self.elements+1] = item
     end
+    return self
 end
 
 ---Finds an item if it's inside the collection

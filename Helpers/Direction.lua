@@ -24,4 +24,12 @@ function Direction:opposite(direction)
     return "WEST"
 end
 
+function Direction.detect(dx, dy)
+    if dx ~= 0 and dy ~=0 then return nil end
+    if dx > 0 then return Direction.EAST end
+    if dx < 0 then return Direction.WEST end
+    if dy > 0 then return Direction.SOUTH end
+    return Direction.NORTH
+end
+
 return Direction

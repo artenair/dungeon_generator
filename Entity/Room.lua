@@ -105,6 +105,7 @@ end
 ---@param neighbour Room
 ---@param direction Direction 
 function Room:addNeighbour(neighbour, direction)
+    if not direction then return end
     if self.neighbours[direction] ~= nil then return end
     self.neighbours[direction] = neighbour
     local opposite = Direction:opposite(direction)

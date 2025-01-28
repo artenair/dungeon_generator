@@ -1,3 +1,5 @@
+local Collection = require"Helpers.Collection"
+
 ---@class Point
 ---@field x integer
 ---@field y integer
@@ -22,6 +24,22 @@ end
 
 function Point:equals(other)
     return self.x == other.x and self.y == other.y
+end
+
+function Point:getOrthogonals()
+    local orthogonals = Collection:new()
+    local directions = {
+        {dx = 0, dy = -1},
+        {dx = 1, dy = 0},
+        {dx = 0, dy = 1},
+        {dx = -1, dy = 0}
+    }
+
+    for _, direction in ipairs(directions) do
+        orthogonals:add(Point:new(self.x + direction.dx, self.y + direction.dy))
+    end
+
+    return orthogonals
 end
 
 return Point

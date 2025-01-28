@@ -17,6 +17,8 @@ function Graph:new()
     return instance
 end
 
+---Adds a node to the graph
+---@param node Node 
 function Graph:addNode(node)
     self.nodes[#self.nodes+1] = node
     if not node.id then node.id = #self.nodes end

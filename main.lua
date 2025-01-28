@@ -1,6 +1,6 @@
 local settings = require"settings"
 local Collection = require"Helpers.Collection"
-local Dungeon = require"Entity.Dungeon"
+local DungeonFactory = require"Factories.DungeonFactory"
 
 local gameState = {
     paused = false,
@@ -11,11 +11,14 @@ function getCenter()
     return settings.window.width / 2, settings.window.height / 2
 end
 
-function makeNewDungeon(rooms)
-    return Dungeon:new(rooms)
-end
 
-local dungeonCardinality = 6
+local dungeonCardinality = 4
+local dungeonFactory = DungeonFactory:new(dungeonCardinality)
+local makeNewDungeon = function(rooms)
+    dungeonFactory:setSeed(os.time())
+    dungeonFactory:setRooms(rooms)
+    return dungeonFactory:makeSkeleton()
+end
 local dungeonInstance = makeNewDungeon(dungeonCardinality)
 
 -- Load some default values for our rectangle.
