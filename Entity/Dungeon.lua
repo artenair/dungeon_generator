@@ -50,18 +50,4 @@ function Dungeon:detectSpawn()
     end, { room = nil, distance = math.huge}).room
 end
 
-
-function Dungeon:draw()
-    local rooms = Collection:new(self.graph.nodes):map(function(node) return node.item end)
-    local widthSegments = love.graphics.getWidth() / (self.bounds.x + 1)
-    local heightSegments = love.graphics.getHeight() / (self.bounds.y + 1)
-    local segmentLength = math.min(widthSegments, heightSegments)
-
-    ---Draws a room
-    ---@param room Room
-    local drawRoom = function(room) room:draw(segmentLength) end
-    love.graphics.setColor(1, 1, 1, 1)
-    rooms:foreach(drawRoom)
-end
-    
 return Dungeon

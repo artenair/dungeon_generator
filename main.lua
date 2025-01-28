@@ -1,6 +1,7 @@
 local settings = require"settings"
 local Collection = require"Helpers.Collection"
 local DungeonFactory = require"Factories.DungeonFactory"
+local DungeonRenderer = require"Renderer.DungeonRenderer"
 
 local gameState = {
     paused = false,
@@ -20,6 +21,7 @@ local makeNewDungeon = function(rooms)
     return dungeonFactory:makeSkeleton()
 end
 local dungeonInstance = makeNewDungeon(dungeonCardinality)
+local dungeonRenderer = DungeonRenderer:new()
 
 -- Load some default values for our rectangle.
 function love.load()
@@ -29,21 +31,11 @@ end
 
 -- Increase the size of the rectangle every frame.
 function love.update(dt)
-    local updater = function (entity)
-        if entity['update'] == nil then return end
-        entity:update(dt)
-    end
-    gameState.entities:foreach(updater)
 end
 
 -- Draw a coloured rectangle.
 function love.draw()
-    local renderer = function (entity)
-        if entity['draw'] == nil then return end
-        entity:draw()
-    end
-    gameState.entities:foreach(renderer)
-    dungeonInstance:draw()
+    dungeonRenderer:handle(dungeonInstance)
 end
 
 function love.keypressed(key)
