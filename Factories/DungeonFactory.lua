@@ -40,8 +40,7 @@ end
 function DungeonFactory:makeSkeleton()
     math.randomseed(self.seed)
     local roomPositions = self:getRoomPositions()
-    local dungeonGraph = self:generateRooms(roomPositions):getSpanningTree()
-    print(Dump(dungeonGraph.edges))
+    local dungeonGraph = self:generateGraph(roomPositions)
     return Dungeon:new(dungeonGraph)
 end
 
@@ -106,32 +105,44 @@ end
 ---Gets an array of positions and generates a graph
 ---@param positions Collection 
 ---@return Graph 
-function DungeonFactory:generateRooms(positions)
+function DungeonFactory:generateGraph(positions)
     local dungeon = Graph:new()
 
     --- Adds each node to the graph
     ---@param position Point
     positions:foreach(function(position)
-        local room = self:generateRoom(position)
-        dungeon:addNode(Node:new(room))
+        dungeon:addNode(Node:new(position))
     end)
 
     local rooms = Collection:new(dungeon.nodes)
 
-    rooms:foreach(function(room)
-        rooms:foreach(function(other)
-            local d = Point:new(
-                other.item.body.center.x - room.item.body.center.x,
-                other.item.body.center.y - room.item.body.center.y
-            )
+    rooms:foreach(function(a)
+        rooms:foreach(function(b)
+            local d = Point:new( b.item.x - a.item.x, b.item.y - a.item.y )
             local orthogonalDistance = math.abs(d.x) + math.abs(d.y)
             if orthogonalDistance ~= 1 then return end
-            dungeon:addEdge(room, other)
-            room.item:addNeighbour(other.item, Direction.detect(d.x, d.y))
+            dungeon:addEdge(a, b)
         end)
     end)
 
-    return dungeon
+    local spanningTree = dungeon:getSpanningTree()
+
+    for i=1,#spanningTree.nodes do
+        local node = spanningTree.nodes[i]
+        node.item = Room:new(node.item)
+    end
+
+    for _, node in ipairs(spanningTree.nodes) do
+        for _, neighbour in ipairs(spanningTree.edges[node.id]) do
+            local d = Point:new(
+                neighbour.item.body.center.x - node.item.body.center.x,
+                neighbour.item.body.center.y - node.item.body.center.y
+            )
+            node.item:addNeighbour(neighbour.item, Direction.detect(d.x, d.y))
+        end
+    end
+
+    return spanningTree
 end
 
 ---TODO: Generate the decorations of the room

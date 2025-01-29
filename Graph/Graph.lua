@@ -44,32 +44,51 @@ function Graph:hasEdge(a, b)
     return false
 end
 
+function Graph:display()
+    local output = ""
+    for _, node in ipairs(self.nodes) do
+        output = output .. node.id .. " -> "
+        local edges = ""
+        for _, edge in ipairs(self.edges[node.id]) do
+            edges = edges .. ", " .. edge.id
+        end
+        output = output .. edges:sub(2, #edges) .. "\n"
+    end
+    print(output)
+end
+
 function Graph:getSpanningTree()
     local tree = Graph:new()
     if #self.nodes < 1 then return tree end
-    tree:addNode(self.nodes[1])
-    local isSameNode = function(a, b) return a.id == b.id end
-    local nodes = Collection:new(self.nodes)
-    while #tree.nodes < #self.nodes do
-        local explored = Collection:new(tree.nodes)
-        local candidates = explored:reduce(function (candidates, node)
-            Collection
-                :new(self.edges[node.id])
-                :filter(function(candidate) return candidate.id ~= node.id end)
-                :foreach(function(candidate)
-                    if not candidates:contains(candidate, isSameNode) then
-                        candidates:add(candidate)
-                    end
-                end)
-            return candidates
-        end, Collection:new())
-        local selected = candidates:get(math.random(candidates:size()))
-        tree:addNode(selected)
-
-        local selectedEdges = Collection:new(self.edges[selected.id]):filter(function(node)
-            return Collection:new(tree.nodes):contains(node, isSameNode)
-        end)
-        tree:addEdge(selected, selectedEdges:get(math.random(selectedEdges:size())))
+    tree:addNode(self.nodes[math.random(#self.nodes)])
+    for loops=0,#self.nodes - 1 do
+        local foundEdge = false
+        local i = 0
+        local nodeId = math.random(#tree.nodes)
+        local edgeId = 0
+        local node = nil
+        local edge = nil
+        repeat
+            nodeId = math.fmod(nodeId + i, #tree.nodes) + 1
+            node = tree.nodes[nodeId]
+            edgeId = math.random(#self.edges[node.id])
+            local j = 0
+            repeat
+                edgeId = math.fmod(edgeId + j, #self.edges[node.id]) + 1
+                edge = self.edges[node.id][edgeId]
+                foundEdge = edge and not Collection:new(tree.nodes):contains(edge, function (a, b) return a.id == b.id end)
+                j = j + 1
+            until foundEdge or j > #self.edges[node.id]
+            i = i + 1
+        until foundEdge or i > #tree.nodes
+        if foundEdge then
+            tree:addNode(edge)
+            tree:addEdge(node, edge)
+        end
+    end
+    local loops = 1
+    while loops < #self.nodes do
+        loops = loops + 1
     end
     return tree
 end

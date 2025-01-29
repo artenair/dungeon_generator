@@ -13,6 +13,10 @@ function Point:new(x, y)
     }, self)
 end
 
+function Point:__tostring()
+    return "(" .. self.x .. ", " .. self.y .. ")"
+end
+
 ---Returns the distance between two point
 ---@param other Point
 ---@return number

@@ -27,8 +27,9 @@ end
 ---Finds an item if it's inside the collection
 ---@param needle any
 ---@param comparator ?function 
+---@return boolean
 function Collection:contains(needle, comparator)
-    if not self.elements then return end
+    if not self.elements then return false end
 
     comparator = comparator or function(a, b)
         return a == b
