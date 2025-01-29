@@ -36,7 +36,7 @@ end
 
 -- Draw a coloured rectangle.
 function love.draw()
-    dungeonRenderer:handle(dungeonInstance)
+    dungeonRenderer:handle(dungeonInstance, 0.1)
 end
 
 function love.keypressed(key)
