@@ -50,8 +50,9 @@ function Dungeon:detectSpawn()
         end
         return { room = room, distance = currentMaxDistance }
     end, { room = nil, distance = math.huge}).room
-
-    self.spawn.isSpawn = true
+    if self.spawn then
+        self.spawn.isSpawn = true
+    end
 end
 
 return Dungeon

@@ -108,4 +108,12 @@ function Collection:get(index)
     return self.elements[index]
 end
 
+---Shifts the first N elements of the collection
+---@param quantity ?integer 
+---@return any
+function Collection:shift(quantity)
+    quantity = quantity or 1
+    return table.remove(self.elements, 1)
+end
+
 return Collection

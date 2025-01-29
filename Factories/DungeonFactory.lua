@@ -40,7 +40,8 @@ end
 function DungeonFactory:makeSkeleton()
     math.randomseed(self.seed)
     local roomPositions = self:getRoomPositions()
-    local dungeonGraph = self:generateRooms(roomPositions)
+    local dungeonGraph = self:generateRooms(roomPositions):getSpanningTree()
+    print(Dump(dungeonGraph.edges))
     return Dungeon:new(dungeonGraph)
 end
 
