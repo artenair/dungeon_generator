@@ -1,4 +1,5 @@
 local Direction = require"Helpers.Direction"
+local Point = require"Geometry.Point"
 
 local RoomRenderer = {}
 RoomRenderer.__index = RoomRenderer
@@ -16,6 +17,7 @@ function RoomRenderer:handle(room, scale, gap)
     love.graphics.setColor(1, 1, 1, 1)
     self:drawWalls(room, scale, gap)
     self:drawPassages(room, scale, gap)
+    self:drawEtchings(room, scale, gap)
     self:drawDecoration(room, scale)
 end
 
@@ -37,6 +39,69 @@ function RoomRenderer:drawPassages(room, scale, gap)
     self:drawPassage(room, Direction.SOUTH, scale, gap)
     self:drawPassage(room, Direction.WEST, scale, gap)
     self:drawPassage(room, Direction.EAST, scale, gap)
+end
+
+function RoomRenderer:drawEtchings(room, scale, gap)
+    self:drawEtching(room, Direction.NORTH, scale, gap)
+    self:drawEtching(room, Direction.EAST, scale, gap)
+    self:drawEtching(room, Direction.SOUTH, scale, gap)
+    self:drawEtching(room, Direction.WEST, scale, gap)
+end
+
+function RoomRenderer:drawEtching(room, direction, scale, gap)
+    if gap <= 0 then return end
+
+    local iterations = 2 / gap
+    local delta = Point:new(-0.5, -0.5)
+
+    gap = gap / 2
+    if direction == Direction.EAST then
+        delta.x = 0.5 - gap
+    end
+    if direction == Direction.SOUTH then
+        delta.y = 0.5 - gap
+    end
+
+    local dx = 0
+    if direction == Direction.NORTH or direction == Direction.SOUTH then
+        dx = 1
+    end
+
+    local dy = 0
+    if direction == Direction.WEST or direction == Direction.EAST then
+        dy = 1
+    end
+
+
+    local hasGap = room.neighbours[direction]
+    local leftProngLimit = room.body.center.x - 0.25
+    local rightProngLimit = room.body.center.x + 0.25
+    local topProngLimit = room.body.center.y - 0.25
+    local bottomProngLimit = room.body.center.y + 0.25
+
+    for i=0,iterations - 1 do
+        local x = room.body.center.x + delta.x
+        local y = room.body.center.y + delta.y
+        local sx = gap * i * dx
+        local sy = gap * i * dy
+        local verticalProngs = dy > 0 and ((y + sy < topProngLimit) or (y + sy >= bottomProngLimit))
+        local horizontalProngs = dx > 0 and ((x + sx < leftProngLimit) or (x + sx >= rightProngLimit))
+        if not hasGap or verticalProngs or horizontalProngs then
+            love.graphics.line(
+                (x + sx) * scale,
+                (y + sy) * scale,
+                (x + sx + gap) * scale,
+                (y + sy + gap) * scale
+            )
+            love.graphics.line(
+                (x + sx + gap) * scale,
+                (y + sy) * scale,
+                (x + sx) * scale,
+                (y + sy + gap) * scale
+            )
+        end
+    end
+
 end
 
 function RoomRenderer:drawPassage(room, direction, scale, gap)
