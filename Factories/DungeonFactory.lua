@@ -31,8 +31,8 @@ end
 
 function DungeonFactory:setRooms(rooms)
     self.rooms = rooms
-    self.width = math.max(rooms, self.width)
-    self.height = math.max(rooms, self.height)
+    self.width = math.max(#rooms, self.width)
+    self.height = math.max(#rooms, self.height)
 end
 
 ---Creates a dungeon of a given size
