@@ -54,7 +54,7 @@ function Graph:getSpanningTree()
     local tree = Graph:new()
     if #self.nodes < 1 then return tree end
     tree:addNode(self.nodes[math.random(#self.nodes)])
-    for loops=0,#self.nodes - 1 do
+    while #tree.nodes < #self.nodes do
         local foundEdge = false
         local i = 0
         local nodeIdx = math.random(#tree.nodes)

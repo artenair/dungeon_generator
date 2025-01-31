@@ -10,7 +10,7 @@ function RoomRenderer:new()
     }, self)
 end
 
-function RoomRenderer:handle(room, scale, gap)
+function RoomRenderer:handle(room, scale, gap, roomId)
     scale = scale or 1
     gap = gap or 0
 
@@ -18,10 +18,10 @@ function RoomRenderer:handle(room, scale, gap)
     self:drawWalls(room, scale, gap)
     self:drawPassages(room, scale, gap)
     self:drawEtchings(room, scale, gap)
-    self:drawDecoration(room, scale, gap)
+    self:drawDecoration(room, scale, gap, roomId)
 end
 
-function RoomRenderer:drawDecoration(room, scale, gap)
+function RoomRenderer:drawDecoration(room, scale, gap, roomId)
     -- if not room.isSpawn then return end
     local font = love.graphics.newFont(math.floor(scale / 12))
     love.graphics.setFont(font)
@@ -29,6 +29,13 @@ function RoomRenderer:drawDecoration(room, scale, gap)
     local dx = font:getWidth(content)
     local dy = font:getHeight(content)
     love.graphics.print(content, scale * (room.body.center.x + 0.5 - gap) - dx, scale * (room.body.center.y + 0.5 - gap) - dy)
+    if roomId ~= nil then
+        dy = font:getHeight(roomId)
+        love.graphics.print(
+            roomId,
+            scale * (room.body.center.x - 0.5 + gap),
+            scale * (room.body.center.y + 0.5 - gap) - dy)
+    end
 end
 
 function RoomRenderer:drawWalls(room, scale, gap)
