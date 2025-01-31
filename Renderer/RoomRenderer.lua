@@ -22,9 +22,9 @@ function RoomRenderer:handle(room, scale, gap)
 end
 
 function RoomRenderer:drawDecoration(room, scale)
-    if not room.isSpawn then return end
-    love.graphics.setNewFont(math.floor(scale / 2))
-    love.graphics.print("s", scale * (room.body.center.x - 0.1), scale * (room.body.center.y - 0.375))
+    -- if not room.isSpawn then return end
+    love.graphics.setNewFont(math.floor(scale / 6))
+    love.graphics.print(tostring(room.body.center), scale * room.body.center.x, scale * room.body.center.y)
 end
 
 function RoomRenderer:drawWalls(room, scale, gap)

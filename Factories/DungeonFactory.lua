@@ -47,41 +47,56 @@ end
 ---Returns the positions of the rooms to be spawned
 ---@return Collection 
 function DungeonFactory:getRoomPositions()
-    local positions = Collection:new({
-        Point:new(math.floor(self.width / 2), math.floor(self.height / 2))
-    })
+    return Collection:new({
+        {x = 5, y = 1},
+        {x = 3, y = 2},
+        {x = 4, y = 2},
+        {x = 5, y = 2},
+        {x = 6, y = 2},
+        {x = 1, y = 3},
+        {x = 2, y = 3},
+        {x = 3, y = 3},
+        {x = 4, y = 3},
+        {x = 5, y = 3},
+        {x = 2, y = 4},
+        {x = 3, y = 4}
+    }):map(function(p) return Point:new(p.x, p.y) end)
 
-    ---Tells if a point is contained in the grid
-    ---@param position Point 
-    local inGrid = function(position)
-        return  position.x > 0 and
-                position.x <= self.width and
-                position.y > 0 and
-                position.y <= self.height
-    end
-
-    local samePoint = function(a, b) return a:equals(b) end
-
-    ---Gets the candidates to be added to the room
-    ---@param candidates Collection 
-    ---@param position Point 
-    local getCandidates = function (candidates, position)
-        position:getOrthogonals():foreach(function(neighbour)
-            if not inGrid(neighbour) then return end
-            if positions:contains(neighbour, samePoint) then return end
-            if candidates:contains(neighbour, samePoint) then return end
-            candidates:add(neighbour)
-        end)
-        return candidates
-    end
-
-    for _=2,self.rooms do
-        local candidates = positions:reduce(getCandidates, Collection:new())
-        local selected = candidates:get(math.random(candidates:size()))
-        positions:add(selected)
-    end
-
-    return DungeonFactory:normalizeRooms(positions)
+    -- local positions = Collection:new({
+    --     Point:new(math.floor(self.width / 2), math.floor(self.height / 2))
+    -- })
+    --
+    -- ---Tells if a point is contained in the grid
+    -- ---@param position Point 
+    -- local inGrid = function(position)
+    --     return  position.x > 0 and
+    --             position.x <= self.width and
+    --             position.y > 0 and
+    --             position.y <= self.height
+    -- end
+    --
+    -- local samePoint = function(a, b) return a:equals(b) end
+    --
+    -- ---Gets the candidates to be added to the room
+    -- ---@param candidates Collection 
+    -- ---@param position Point 
+    -- local getCandidates = function (candidates, position)
+    --     position:getOrthogonals():foreach(function(neighbour)
+    --         if not inGrid(neighbour) then return end
+    --         if positions:contains(neighbour, samePoint) then return end
+    --         if candidates:contains(neighbour, samePoint) then return end
+    --         candidates:add(neighbour)
+    --     end)
+    --     return candidates
+    -- end
+    --
+    -- for _=2,self.rooms do
+    --     local candidates = positions:reduce(getCandidates, Collection:new())
+    --     local selected = candidates:get(math.random(candidates:size()))
+    --     positions:add(selected)
+    -- end
+    --
+    -- return DungeonFactory:normalizeRooms(positions)
 end
 
 ---Gets a list of positions, and normalizes them to have the minX = 0 and minY = 0
@@ -118,10 +133,14 @@ function DungeonFactory:generateGraph(positions)
 
     rooms:foreach(function(a)
         rooms:foreach(function(b)
-            local d = Point:new( b.item.x - a.item.x, b.item.y - a.item.y )
-            local orthogonalDistance = math.abs(d.x) + math.abs(d.y)
-            if orthogonalDistance ~= 1 then return end
+            if a == b then return end
+
+            local dx = math.abs(b.item.x - a.item.x)
+            local dy = math.abs(b.item.y - a.item.y)
+            local d = dx + dy
+            if d ~= 1 then return end
             dungeon:addEdge(a, b)
+            dungeon:addEdge(b, a)
         end)
     end)
 
@@ -133,7 +152,7 @@ function DungeonFactory:generateGraph(positions)
     end
 
     for _, node in ipairs(spanningTree.nodes) do
-        for _, neighbour in ipairs(spanningTree.edges[node.id]) do
+        for _, neighbour in ipairs(spanningTree:getNeighboursFor(node.id)) do
             local d = Point:new(
                 neighbour.item.body.center.x - node.item.body.center.x,
                 neighbour.item.body.center.y - node.item.body.center.y
