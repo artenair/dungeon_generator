@@ -18,13 +18,17 @@ function RoomRenderer:handle(room, scale, gap)
     self:drawWalls(room, scale, gap)
     self:drawPassages(room, scale, gap)
     self:drawEtchings(room, scale, gap)
-    self:drawDecoration(room, scale)
+    self:drawDecoration(room, scale, gap)
 end
 
-function RoomRenderer:drawDecoration(room, scale)
+function RoomRenderer:drawDecoration(room, scale, gap)
     -- if not room.isSpawn then return end
-    love.graphics.setNewFont(math.floor(scale / 6))
-    love.graphics.print(tostring(room.body.center), scale * room.body.center.x, scale * room.body.center.y)
+    local font = love.graphics.newFont(math.floor(scale / 12))
+    love.graphics.setFont(font)
+    local content = tostring(room.body.center)
+    local dx = font:getWidth(content)
+    local dy = font:getHeight(content)
+    love.graphics.print(content, scale * (room.body.center.x + 0.5 - gap) - dx, scale * (room.body.center.y + 0.5 - gap) - dy)
 end
 
 function RoomRenderer:drawWalls(room, scale, gap)
