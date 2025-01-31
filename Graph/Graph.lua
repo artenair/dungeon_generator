@@ -66,7 +66,6 @@ function Graph:getSpanningTree()
             nodeIdx = math.fmod(nodeIdx + i, #tree.nodes) + 1
             node = tree.nodes[nodeIdx]
             local neighbours = self:getNeighboursFor(node.id)
-            Collection:new(neighbours):foreach(function(neighbour) print("\tDestination: " .. tostring(neighbour.item)) end)
             neighbourId = math.random(#neighbours)
             local j = 0
             repeat
