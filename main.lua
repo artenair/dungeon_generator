@@ -2,6 +2,7 @@ local settings = require"settings"
 local Collection = require"Helpers.Collection"
 local DungeonFactory = require"Factories.DungeonFactory"
 local DungeonRenderer = require"Renderer.DungeonRenderer"
+local FloorSizeCalculator = require"ProceduralGeneration.FloorSizeCalculator"
 
 local gameState = {
     paused = false,
@@ -12,13 +13,27 @@ function getCenter()
     return settings.window.width / 2, settings.window.height / 2
 end
 
-local dungeonFactory = DungeonFactory:new(settings.generator.rooms)
+local dungeonFactory = DungeonFactory:new()
 
 local makeNewDungeon = function(rooms)
-    rooms = rooms or settings.generator.rooms or 6
-    dungeonFactory:setSeed(os.time())
-    dungeonFactory:setRooms(rooms)
-    return dungeonFactory:makeSkeleton()
+    local seed = os.time()
+    math.randomseed(seed)
+    local isHuge = math.random() > 0.5
+    local maxRooms = settings.dungeon.maxRooms.normal
+    if isHuge then
+        maxRooms = settings.dungeon.maxRooms.huge
+    end
+    local tier = math.random(1, 4)
+    local rooms = FloorSizeCalculator:get(maxRooms, tier, isHuge)
+    print("Generating a dungeon with :")
+    print("\tTier: " .. tier)
+    if isHuge then
+        print("\tHuge: Yes")
+    else
+        print("\tHuge: No")
+    end
+    print("\tRooms: " .. rooms)
+    return dungeonFactory:makeSkeleton(rooms)
 end
 
 local dungeonInstance = makeNewDungeon()
