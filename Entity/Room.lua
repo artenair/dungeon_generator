@@ -1,5 +1,4 @@
 local PolygonFactory = require"Factories.PolygonFactory"
-local PolygonRenderer = require"Renderer.PolygonRenderer"
 local Direction = require"Helpers.Direction"
 
 ---@class Room
