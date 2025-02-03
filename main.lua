@@ -25,14 +25,6 @@ local makeNewDungeon = function(rooms)
     end
     local tier = math.random(1, 4)
     local rooms = FloorSizeCalculator:get(maxRooms, tier, isHuge)
-    print("Generating a dungeon with :")
-    print("\tTier: " .. tier)
-    if isHuge then
-        print("\tHuge: Yes")
-    else
-        print("\tHuge: No")
-    end
-    print("\tRooms: " .. rooms)
     return dungeonFactory:makeSkeleton(rooms)
 end
 
