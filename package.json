@@ -1,0 +1,30 @@
+{
+  "name": "dungeon_generator",
+  "version": "1.0.0",
+  "description": "Creates a dungeon structure to run your players through",
+  "license": "WTFPL",
+  "author": "Artenair",
+  "type": "javascript",
+  "private": true,
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "watch": "webpack --config webpack.config.js --watch",
+    "start": "webpack serve --config webpack.config.js --open"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.4",
+    "@babel/preset-env": "^7.28.3",
+    "babel-loader": "^10.0.0",
+    "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.6.4",
+    "sass": "^1.93.2",
+    "sass-loader": "^16.0.5",
+    "style-loader": "^4.0.0",
+    "webpack": "^5.102.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
+  },
+  "dependencies": {
+    "uuid": "^13.0.0"
+  }
+}
