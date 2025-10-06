@@ -4,10 +4,15 @@ import RoomShapeFactory from "./RoomShapeFactory.js";
 
 export default class Room {
 
-    constructor(center, shape) {
+    constructor({center = undefined, shape = undefined } = {}) {
         this.center = center || new Point(0, 0);
         shape = shape || RoomShapeFactory.getRandomShape();
         this.shape = new RoomShape(shape, this.center);
+    }
+
+    setCenter(center) {
+        this.center = center;
+        this.shape.setOrigin(center);
     }
 
     width() {
