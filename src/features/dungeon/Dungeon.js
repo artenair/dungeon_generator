@@ -10,8 +10,8 @@ export const calculateGridSize = (dungeon, canvas) => {
     const height = canvas.height;
 
     return Math.floor(Math.min(
-        canvas.width / (dungeon.getWidth() + 4),
-        canvas.height / (dungeon.getHeight() + 4),
+        canvas.width / (dungeon.getWidth() + 2),
+        canvas.height / (dungeon.getHeight() + 2),
     ));
 }
 
@@ -56,8 +56,9 @@ export default class Dungeon {
 
     normalize() {
         const boundingBox = this.boundingBox();
-        const dx = Math.floor((boundingBox.minX + boundingBox.maxX) / 2);
-        const dy = Math.floor((boundingBox.minY + boundingBox.maxY) / 2);
+        console.log(boundingBox);
+        const dx = Math.min(boundingBox.minX, 0) + Math.floor(this.getWidth() / 2);
+        const dy = Math.min(boundingBox.minY, 0) + Math.floor(this.getHeight() / 2);
         this.rooms.forEach((room) => {
             room.center.x -= dx;
             room.center.y -= dy;

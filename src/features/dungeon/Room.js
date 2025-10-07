@@ -36,8 +36,8 @@ export default class Room {
                 if(!isOccupied) return;
                 boundingBox.minX = Math.min(boundingBox.minX, this.center.x + x)
                 boundingBox.maxX = Math.max(boundingBox.maxX, this.center.x + x)
-                boundingBox.minY = Math.min(boundingBox.minY, this.center.y + x)
-                boundingBox.maxY = Math.max(boundingBox.maxY, this.center.y + x)
+                boundingBox.minY = Math.min(boundingBox.minY, this.center.y + y)
+                boundingBox.maxY = Math.max(boundingBox.maxY, this.center.y + y)
             })
         });
 
