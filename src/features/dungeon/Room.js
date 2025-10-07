@@ -1,10 +1,12 @@
-import Point from "../../utils/Point.js";
+import { v4 as uuidv4 } from "uuid";
 import RoomShape from "./RoomShape.js";
+import Point from "../../utils/Point.js";
 import RoomShapeFactory from "./RoomShapeFactory.js";
 
 export default class Room {
 
-    constructor({center = undefined, shape = undefined } = {}) {
+    constructor({center = undefined, shape = undefined, id = undefined } = {}) {
+        this.id = id || uuidv4();
         this.center = center || new Point(0, 0);
         shape = shape || RoomShapeFactory.getRandomShape();
         this.shape = new RoomShape(shape, this.center);

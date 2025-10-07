@@ -35,12 +35,38 @@ export default class RoomShapeFactory {
         ];
     }
 
+    static getCircleRoom() {
+        return [
+            [1, 1, 1],
+            [1, 0, 1],
+            [1, 1, 1],
+        ]
+    }
+
+    static getCircleRoom() {
+        return [
+            [1, 1, 1],
+            [1, 0, 1],
+            [1, 1, 1],
+        ]
+    }
+
+    static getTetrisRoom() {
+        return [
+            [0, 0, 0],
+            [1, 1, 1],
+            [0, 1, 0],
+        ]
+    }
+
     static getAllRooms() {
         return [
             RoomShapeFactory.getSingleRoom(),
             RoomShapeFactory.getLongRoom(),
             RoomShapeFactory.getLRoom(),
             RoomShapeFactory.getSquareRoom(),
+            // RoomShapeFactory.getCircleRoom(),
+            // RoomShapeFactory.getTetrisRoom(),
         ]
     }
 

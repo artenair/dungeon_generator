@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         .windowedFullScreen()
         .start([
             ClearRenderer,
-            { renderer: GridRenderer, params: { dungeon } },
+            // { renderer: GridRenderer, params: { dungeon } },
             { renderer: DungeonRenderer, params: { dungeon } }
         ])
     ;

@@ -46,6 +46,14 @@ export default class Canvas {
         this.context.stroke(); 
     }
 
+    drawRectangle(tl_x, tl_y, br_x, br_y, color) {
+        color = color || "rgb(0, 0, 0)";
+        this.context.beginPath();
+        this.context.rect(tl_x + 0.5, tl_y + 0.5, br_x - tl_x, br_y - tl_y);
+        this.context.fillStyle = color;
+        this.context.fill();
+    }
+
     drawHLine(from_x, to_x, y, width, color) {
         this.drawLine(
             from_x, y,

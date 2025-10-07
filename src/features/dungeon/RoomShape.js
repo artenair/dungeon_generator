@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import Point from "../../utils/Point.js";
 
 export const makeLocationId = (x, y) => `${x}_${y}`;
@@ -20,8 +19,7 @@ export const getNeighbour = (x, y, direction) => {
 
 export default class RoomShape {
 
-    constructor(shape, origin, id) {
-        this.id = id || uuidv4();
+    constructor(shape, origin) {
         this.shape = shape;
         this.origin = origin;
     }
