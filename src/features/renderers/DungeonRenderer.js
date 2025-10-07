@@ -1,19 +1,18 @@
-import { makeLocationId, getCoordsFromId } from "../dungeon/RoomShape.js";
 import Point from "../../utils/Point.js";
+import { calculateGridSize } from "../dungeon/Dungeon.js";
+import { makeLocationId, getCoordsFromId } from "../dungeon/RoomShape.js";
 
 export default class DungeonRenderer {
 
-    constructor({ dungeon, gridSize, padding, shift }) {
+    constructor({ dungeon, padding }) {
         this.dungeon = dungeon;
-        this.gridSize = gridSize;
         this.padding = padding || 0.1;
-        this.shift = new Point(
-            dungeon.entrance.width() / 2,
-            dungeon.entrance.height() / 2
-        );
+        this.shift = new Point( 0, 0 );
     }
 
     run(canvas, focus, dt) {
+        const gridSize = calculateGridSize(this.dungeon, canvas);
+
         this.dungeon.rooms.forEach(room => {
             const shape = room.shape.shape;
             shape.forEach((row, y) => {
@@ -34,96 +33,96 @@ export default class DungeonRenderer {
 
                     if(!top) {
                         canvas.drawHLine(
-                            this.gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
-                            this.gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
-                            this.gridSize * ( room.center.y + position.y + this.padding - this.shift.y)
+                            gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
+                            gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
+                            gridSize * ( room.center.y + position.y + this.padding - this.shift.y)
                         );
                     } else {
                         if(hasInnerCorners(leftLocation)) {
                             canvas.drawVLine(
-                                this.gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y - this.padding - this.shift.y),
-                                this.gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y - this.padding - this.shift.y),
+                                gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
                             );
                         }
                         
                         if(hasInnerCorners(rightLocation)) {
                             canvas.drawVLine(
-                                this.gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y - this.padding - this.shift.y),
-                                this.gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y - this.padding - this.shift.y),
+                                gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
                             );
                         }
                     }
 
                     if(!right) {
                         canvas.drawVLine(
-                            this.gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
-                            this.gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
-                            this.gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y)
+                            gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
+                            gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
+                            gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y)
                         );
                     } else {
                         if(hasInnerCorners(topLocation)) {
                             canvas.drawHLine(
-                                this.gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
-                                this.gridSize * ( room.center.x + position.x + 1 + this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
+                                gridSize * ( room.center.x + position.x + 1 + this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
                             );
                         }
 
                         if(hasInnerCorners(bottomLocation)) {
                             canvas.drawHLine(
-                                this.gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
-                                this.gridSize * ( room.center.x + position.x + 1 + this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
+                                gridSize * ( room.center.x + position.x + 1 + this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
                             );
                         }
                     }
 
                     if(!bottom) {
                         canvas.drawHLine(
-                            this.gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
-                            this.gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
-                            this.gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y)
+                            gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
+                            gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
+                            gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y)
                         );
                     } else {
                         if(hasInnerCorners(leftLocation)) {
                             canvas.drawVLine(
-                                this.gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
-                                this.gridSize * ( room.center.y + position.y + 1 + this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
+                                gridSize * ( room.center.y + position.y + 1 + this.padding - this.shift.y),
                             );
                         }
 
                         if(hasInnerCorners(rightLocation)) {
                             canvas.drawVLine(
-                                this.gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
-                                this.gridSize * ( room.center.y + position.y + 1 + this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x + 1 - this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
+                                gridSize * ( room.center.y + position.y + 1 + this.padding - this.shift.y),
                             );
                         }
                     }
 
                     if(!left) {
                         canvas.drawVLine(
-                            this.gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
-                            this.gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
-                            this.gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y)
+                            gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
+                            gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
+                            gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y)
                         );
                     } else {
                         if(hasInnerCorners(topLocation)) {
                             canvas.drawHLine(
-                                this.gridSize * ( room.center.x + position.x - this.padding - this.shift.x),
-                                this.gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x - this.padding - this.shift.x),
+                                gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y + this.padding - this.shift.y),
                             );
                         }
 
                         if(hasInnerCorners(bottomLocation)) {
                             canvas.drawHLine(
-                                this.gridSize * ( room.center.x + position.x - this.padding - this.shift.x),
-                                this.gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
-                                this.gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
+                                gridSize * ( room.center.x + position.x - this.padding - this.shift.x),
+                                gridSize * ( room.center.x + position.x + this.padding - this.shift.x),
+                                gridSize * ( room.center.y + position.y + 1 - this.padding - this.shift.y),
                             );
                         }
                     }

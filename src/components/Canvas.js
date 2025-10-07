@@ -36,8 +36,9 @@ export default class Canvas {
     }
 
     drawLine(from_x, from_y, to_x, to_y, width, color) {
-        color = color || "rgb(0, 0, 0, 1)";
+        color = color || "rgb(0, 0, 0)";
         width = width || 1;
+        console.log(color);
         this.context.strokeWidth = width;
         this.context.strokeStyle = color;
         this.context.beginPath(); 

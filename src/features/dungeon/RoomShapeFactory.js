@@ -35,7 +35,7 @@ export default class RoomShapeFactory {
         ];
     }
 
-    static getShapes() {
+    static getAllRooms() {
         return [
             RoomShapeFactory.getSingleRoom(),
             RoomShapeFactory.getLongRoom(),
@@ -45,7 +45,7 @@ export default class RoomShapeFactory {
     }
 
     static getRandomShape() {
-        const shapes = RoomShapeFactory.getShapes();
+        const shapes = RoomShapeFactory.getAllRooms();
         const randomShapeIndex = Math.floor(Math.random() * shapes.length);
         let randomShape = shapes[randomShapeIndex];
         return RoomShapeFactory.rotate( 

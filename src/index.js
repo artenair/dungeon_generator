@@ -15,14 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const dungeonGenerator = DungeonGenerator.init(container);
     dungeonGenerator.generate();
     const { dungeon } = dungeonGenerator;
-    const gridSize = 100;
 
     dungeonGenerator
         .windowedFullScreen()
         .start([
             ClearRenderer,
-            // { renderer: GridRenderer, params: { gridSize } },
-            { renderer: DungeonRenderer, params: { dungeon, gridSize } }
+            { renderer: GridRenderer, params: { dungeon } },
+            { renderer: DungeonRenderer, params: { dungeon } }
         ])
     ;
 });

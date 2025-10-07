@@ -1,24 +1,26 @@
 import Point from "../../utils/Point.js";
+import { calculateGridSize } from "../dungeon/Dungeon.js";
 
 export default class Gridrenderer {
 
-    constructor({gridSize}) {
-        this.gridSize = gridSize || 80;
+    constructor({ dungeon }) {
+        this.dungeon = dungeon;
     }
 
-
     run(canvas, focus, dt) {
-        const radius = Math.max(Math.min(parseInt(this.gridSize / 2), 10), 4);
+        const gridSize = calculateGridSize(this.dungeon, canvas);
+
+        const radius = Math.max(Math.min(parseInt(gridSize / 2), 10), 4);
         canvas.drawPoint(0, 0, radius, "rgba(0, 0, 0, 0.75)");
 
         const halfWidth = Math.ceil(canvas.width / 2);
         const halfHeight = Math.ceil(canvas.height / 2);
 
         const gridOpacity = 0.125;
-        for(let dy = 0; dy * this.gridSize < halfWidth; dy++) {
+        for(let dy = 0; dy * gridSize < halfWidth; dy++) {
             const color = dy === 0 ? "rgba(0, 0, 0, 0.5)" : `rgba(0, 0, 0, ${gridOpacity})`;
             canvas.drawVLine(
-                focus.x + (dy * this.gridSize), 
+                focus.x + (dy * gridSize), 
                 focus.y - halfHeight, 
                 focus.y + halfHeight, 
                 1,
@@ -27,7 +29,7 @@ export default class Gridrenderer {
 
             if(dy === 0) continue; 
             canvas.drawVLine(
-                focus.x - (dy * this.gridSize), 
+                focus.x - (dy * gridSize), 
                 focus.y - halfHeight, 
                 focus.y + halfHeight, 
                 1, 
@@ -35,12 +37,12 @@ export default class Gridrenderer {
             );
         }
 
-        for(let dx = 0; dx * this.gridSize < halfHeight; dx++) {
+        for(let dx = 0; dx * gridSize < halfHeight; dx++) {
             const color = dx === 0 ? "rgba(0, 0, 0, 0.5)" : `rgba(0, 0, 0, ${gridOpacity})`;
             canvas.drawHLine(
                 focus.x - halfWidth, 
                 focus.x + halfWidth, 
-                focus.y + (dx * this.gridSize), 
+                focus.y + (dx * gridSize), 
                 1,
                 color
             );
@@ -49,7 +51,7 @@ export default class Gridrenderer {
             canvas.drawHLine(
                 focus.x - halfWidth, 
                 focus.x + halfWidth, 
-                focus.y - (dx * this.gridSize), 
+                focus.y - (dx * gridSize), 
                 1,
                 color
             );
@@ -57,21 +59,21 @@ export default class Gridrenderer {
 
         const centerOpacity = 2 * gridOpacity;
         const centerRadius = Math.ceil(radius / 4);
-        for(let dx = 0; dx * this.gridSize < halfWidth; dx++) {
-            for(let dy = 0; dy * this.gridSize < halfHeight; dy++) {
+        for(let dx = 0; dx * gridSize < halfWidth; dx++) {
+            for(let dy = 0; dy * gridSize < halfHeight; dy++) {
                 if(dx === 0 && dy === 0) continue;
                 const color = `rgba(0, 0, 0, ${centerOpacity})`;
                 canvas.drawPoint(
-                    focus.x + (dx * this.gridSize),
-                    focus.y + (dy * this.gridSize),
+                    focus.x + (dx * gridSize),
+                    focus.y + (dy * gridSize),
                     centerRadius,
                     color
                 );
 
                 if(dx > 0) {
                     canvas.drawPoint(
-                        focus.x - (this.gridSize * dx),
-                        focus.y + (this.gridSize * dy),
+                        focus.x - (gridSize * dx),
+                        focus.y + (gridSize * dy),
                         centerRadius,
                         color
                     );
@@ -79,8 +81,8 @@ export default class Gridrenderer {
 
                 if(dy > 0) {
                     canvas.drawPoint(
-                        focus.x + (this.gridSize * dx),
-                        focus.y - (this.gridSize * dy),
+                        focus.x + (gridSize * dx),
+                        focus.y - (gridSize * dy),
                         centerRadius,
                         color
                     );
@@ -88,8 +90,8 @@ export default class Gridrenderer {
 
                 if(dx > 0 && dy > 0) {
                     canvas.drawPoint(
-                        focus.x - (this.gridSize * dx),
-                        focus.y - (this.gridSize * dy),
+                        focus.x - (gridSize * dx),
+                        focus.y - (gridSize * dy),
                         centerRadius,
                         color
                     );

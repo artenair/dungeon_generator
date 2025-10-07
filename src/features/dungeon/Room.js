@@ -22,4 +22,25 @@ export default class Room {
     height() {
         return this.shape.height();
     }
+
+    boundingBox() {
+        const boundingBox = {
+            minX: Infinity,
+            maxX: -Infinity,
+            minY: Infinity,
+            maxY: -Infinity,
+        };
+
+        this.shape.shape.forEach((row, y) => {
+            row.forEach((isOccupied, x) => {
+                if(!isOccupied) return;
+                boundingBox.minX = Math.min(boundingBox.minX, this.center.x + x)
+                boundingBox.maxX = Math.max(boundingBox.maxX, this.center.x + x)
+                boundingBox.minY = Math.min(boundingBox.minY, this.center.y + x)
+                boundingBox.maxY = Math.max(boundingBox.maxY, this.center.y + x)
+            })
+        });
+
+        return boundingBox;
+    }
 }
