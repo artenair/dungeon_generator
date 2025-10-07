@@ -3,15 +3,19 @@ import { calculateGridSize } from "../dungeon/Dungeon.js";
 
 export default class Gridrenderer {
 
-    constructor({ dungeon }) {
+    constructor({ dungeon, withCenter = true, withIntersections = true }) {
         this.dungeon = dungeon;
+        this.withCenter = withCenter;
+        this.withIntersections = withIntersections;
     }
 
     run(canvas, focus, dt) {
         const gridSize = calculateGridSize(this.dungeon, canvas);
 
-        const radius = Math.max(Math.min(parseInt(gridSize / 2), 10), 4);
-        canvas.drawPoint(0, 0, radius, "rgba(0, 0, 0, 0.75)");
+        if(this.withCenter) {
+            const radius = Math.max(Math.min(parseInt(gridSize / 2), 10), 4);
+            canvas.drawPoint(0, 0, radius, "rgba(0, 0, 0, 0.75)");
+        }
 
         const halfWidth = Math.ceil(canvas.width / 2);
         const halfHeight = Math.ceil(canvas.height / 2);
@@ -56,6 +60,8 @@ export default class Gridrenderer {
                 color
             );
         }
+
+        if(!this.withIntersections) return;
 
         const centerOpacity = 2 * gridOpacity;
         const centerRadius = Math.ceil(radius / 4);
