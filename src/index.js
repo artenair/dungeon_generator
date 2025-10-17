@@ -8,9 +8,7 @@ import DungeonRenderer from "./features/renderers/DungeonRenderer.js";
 
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.querySelector(".dungeon-generator--container");
-    if(!container) {
-        throw new Error("No container for the generator found!");
-    }
+    if(!container) throw new Error("No container for the generator found!");
 
     const dungeonGenerator = DungeonGenerator.init(container);
     dungeonGenerator.generate();

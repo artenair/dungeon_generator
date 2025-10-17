@@ -43,7 +43,6 @@ export default class Dungeon {
             shapeBag.reset();
         }
 
-        this.normalize();
         this.updateOccupiedSpaces();
         this.makeLocationToRoomMap();
         this.makeRoomPassageCandidates();
@@ -98,16 +97,6 @@ export default class Dungeon {
                 })
             })
         });
-    }
-
-    normalize() {
-        const boundingBox = this.boundingBox();
-        const dx = Math.min(boundingBox.minX, 0) + Math.floor(this.getWidth() / 2);
-        const dy = Math.min(boundingBox.minY, 0) + Math.floor(this.getHeight() / 2);
-        this.rooms.forEach((room) => {
-            room.center.x -= dx;
-            room.center.y -= dy;
-        })
     }
 
     getWidth() {
